@@ -28,22 +28,32 @@ Advodraft aims to make legal document preparation faster, structured, and easier
 ## 🖥️ Project Preview
 
 ### Sign In
-![Sign in to Advodraft](screenshots/sign-in.png)
+<img width="1535" height="812" alt="sign-in" src="https://github.com/user-attachments/assets/91fb3aef-f05a-420c-a5d2-46def8853c3a" />
+
 
 ### Create Account
-![Create a new Advodraft account](screenshots/create-account.png)
+<img width="1522" height="813" alt="create-account" src="https://github.com/user-attachments/assets/7e11b9f4-3cf9-4c06-8531-3533ef045ba2" />
+
 
 ### Dashboard
-![Advodraft dashboard with quick-start templates](screenshots/dashboard.png)
+
+<img width="1535" height="813" alt="dashboard" src="https://github.com/user-attachments/assets/10342363-ba22-457b-96d0-7207ee21d9ab" />
+
 
 ### Templates
-![Template gallery with 12 legal document types](screenshots/templates.png)
+
+<img width="1532" height="817" alt="templates" src="https://github.com/user-attachments/assets/3286e7e3-9726-4c40-93bc-f6ec0c88b376" />
+
 
 ### Draft Editor
-![AI-generated draft in the document editor](screenshots/draft-editor.png)
+
+<img width="1526" height="817" alt="draft-editor" src="https://github.com/user-attachments/assets/2d3cab58-81fd-4648-8991-5f23f8b2651b" />
+
 
 ### Saved Drafts
-![Saved drafts list](screenshots/saved-drafts.png)
+
+<img width="1535" height="813" alt="saved-drafts" src="https://github.com/user-attachments/assets/e0dbf9fe-23e8-4527-ad54-11d5bad11777" />
+
 
 ---
 
