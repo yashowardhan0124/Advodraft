@@ -27,23 +27,31 @@ Advodraft aims to make legal document preparation faster, structured, and easier
 
 ## 🖥️ Project Preview
 
-### Application Interface
+### Sign In
+![Sign in to Advodraft](screenshots/sign-in.png)
 
-![Advodraft Home](screenshots/home.png)
+### Create Account
+![Create a new Advodraft account](screenshots/create-account.png)
 
-### Document Drafting
+### Dashboard
+![Advodraft dashboard with quick-start templates](screenshots/dashboard.png)
 
-![Document Drafting](screenshots/document-drafting.png)
+### Templates
+![Template gallery with 12 legal document types](screenshots/templates.png)
 
-### H2 Database Console
+### Draft Editor
+![AI-generated draft in the document editor](screenshots/draft-editor.png)
 
-![H2 Database](screenshots/h2-console.png)
+### Saved Drafts
+![Saved drafts list](screenshots/saved-drafts.png)
 
-### API Testing
+---
 
-![API Response](screenshots/api-response.png)
+## 📄 Sample Generated Document
 
-> **Note:** Replace the image paths above with your actual screenshots.
+A real document generated end-to-end by Advodraft — a **Rental Agreement** between two parties, created by filling in Party A, Party B, and a short instruction on the Draft Document screen, then clicking **Generate Draft**.
+
+👉 [View sample Rental Agreement (PDF)](screenshots/rental-agreement-sample.pdf)
 
 ---
 
