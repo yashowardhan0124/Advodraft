@@ -1,168 +1,281 @@
-# 🪟 STEP 2: Database with H2 (Windows-Friendly!)
+# ⚖️ Advodraft
 
-## 🎯 What We're Building
+> **AI-Powered Legal Document Drafting Platform**
 
-Same as regular Step 2, but with **H2 database** instead of PostgreSQL:
-- ✅ In-memory database (runs inside your app!)
-- ✅ User entity (auto-creates table!)
-- ✅ Spring Data JPA (auto-generates SQL!)
-- ✅ Full CRUD API
-- ✅ **BONUS: Built-in web console to view your data!**
+Advodraft is a full-stack web application designed to simplify the creation and management of legal documents through a modern web interface and AI-powered assistance.
 
-**Best part:** ZERO installation needed! 🎉
+The project combines a responsive frontend with a Spring Boot backend, REST APIs, and database integration to provide a foundation for automated legal document drafting.
 
 ---
 
-## ✨ Why H2?
+## 🚀 Project Overview
 
-**Perfect for Windows users who don't want PostgreSQL hassles!**
+Advodraft aims to make legal document preparation faster, structured, and easier to manage.
 
-✅ No installation  
-✅ No configuration  
-✅ Built-in web UI  
-✅ Same learning outcomes  
-✅ Can switch to PostgreSQL later  
+### Key Features
+
+* 🤖 AI-assisted legal document drafting
+* 📄 Legal document creation and management
+* 👤 User registration and management
+* 🔐 Backend REST APIs
+* 🗄️ Database integration using H2
+* 🔄 CRUD operations using Spring Data JPA
+* 🌐 Responsive web interface
+* ⚡ Spring Boot REST architecture
 
 ---
 
-## 🚀 Quick Start (2 Commands!)
+## 🖥️ Project Preview
 
-```powershell
-cd advodraft-step2-h2
+### Application Interface
+
+![Advodraft Home](screenshots/home.png)
+
+### Document Drafting
+
+![Document Drafting](screenshots/document-drafting.png)
+
+### H2 Database Console
+
+![H2 Database](screenshots/h2-console.png)
+
+### API Testing
+
+![API Response](screenshots/api-response.png)
+
+> **Note:** Replace the image paths above with your actual screenshots.
+
+---
+
+## 🏗️ Project Architecture
+
+```text
+Advodraft
+│
+├── Frontend
+│   └── Web Interface
+│
+├── Backend
+│   ├── Spring Boot
+│   ├── REST APIs
+│   ├── Controllers
+│   ├── Services
+│   └── Repositories
+│
+└── Database
+    └── H2 + Spring Data JPA
+```
+
+---
+
+## 🛠️ Tech Stack
+
+| Technology              | Purpose                 |
+| ----------------------- | ----------------------- |
+| Java 17                 | Backend development     |
+| Spring Boot             | Backend framework       |
+| Spring Web              | REST APIs               |
+| Spring Data JPA         | Database access         |
+| Hibernate               | ORM                     |
+| H2 Database             | Development database    |
+| Lombok                  | Reduce boilerplate code |
+| HTML / CSS / JavaScript | Web interface           |
+| Maven                   | Dependency management   |
+
+---
+
+## 📂 Project Structure
+
+```text
+advodraft-backend/
+│
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/
+│       │       └── advodraft/
+│       │           ├── controller/
+│       │           ├── model/
+│       │           ├── repository/
+│       │           └── AdvodraftApplication.java
+│       │
+│       └── resources/
+│           ├── static/
+│           └── application.yml
+│
+├── pom.xml
+├── README.md
+└── .gitignore
+```
+
+---
+
+## ⚙️ Getting Started
+
+### Prerequisites
+
+Make sure you have installed:
+
+* Java 17
+* Maven
+* Git
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/yashowardhan0124/Advodraft.git
+```
+
+```bash
+cd Advodraft
+```
+
+### Run the Application
+
+```bash
 mvn spring-boot:run
 ```
 
-**That's it!** Database created automatically! 🎉
+The application will start on:
 
----
-
-## 🌐 View Your Database (H2 Console)
-
-Open browser: **http://localhost:8080/h2-console**
-
-**Login:**
-- JDBC URL: `jdbc:h2:mem:advodraft_dev`
-- Username: `sa`
-- Password: (leave empty)
-
-Click "Connect" → See your tables and data!
-
----
-
-## 🧪 Test API (Windows PowerShell)
-
-### Create User
-```powershell
-$body = @{
-    email = "test@example.com"
-    fullName = "Test User"
-} | ConvertTo-Json
-
-Invoke-RestMethod -Uri "http://localhost:8080/api/users" -Method Post -Body $body -ContentType "application/json"
+```text
+http://localhost:8080
 ```
 
-### Get All Users
-**Browser:** http://localhost:8080/api/users
+---
 
-**Or PowerShell:**
-```powershell
-Invoke-RestMethod -Uri "http://localhost:8080/api/users"
+## 🗄️ H2 Database
+
+Advodraft currently uses an H2 in-memory database for development and testing.
+
+### H2 Console
+
+Open:
+
+```text
+http://localhost:8080/h2-console
 ```
 
-### View in H2 Console
-1. Go to H2 console
-2. Run: `SELECT * FROM users;`
-3. See your data! 🎉
+Database URL:
+
+```text
+jdbc:h2:mem:advodraft_dev
+```
+
+Username:
+
+```text
+sa
+```
+
+Password:
+
+```text
+```
+
+The database allows developers to inspect users and other application data during development.
 
 ---
 
-## 📚 What You Learn (Identical to PostgreSQL!)
+## 🔌 REST API
 
-All the same concepts:
-- ✅ JPA & Hibernate
-- ✅ @Entity, @Id, @Column
-- ✅ Spring Data JPA
-- ✅ Repository pattern
-- ✅ CRUD operations
-- ✅ Dependency Injection
+### User API
 
-**Only difference:** H2 vs PostgreSQL (database choice)  
-**Everything else:** IDENTICAL!
+#### Create User
 
----
+```http
+POST /api/users
+```
 
-## 🎯 Study Plan
+Example request:
 
-1. ✅ Run the app (2 mins)
-2. ✅ Create users (5 mins)
-3. ✅ View in H2 console (5 mins)
-4. ✅ Read code comments (30 mins)
-5. ✅ Answer interview questions (10 mins)
+```json
+{
+  "email": "test@example.com",
+  "fullName": "Test User"
+}
+```
 
----
+#### Get All Users
 
-## 🔄 Switch to PostgreSQL Later
+```http
+GET /api/users
+```
 
-When ready:
-1. Change `pom.xml` dependency
-2. Update `application.yml` config
-3. Install PostgreSQL
-4. Done! Same code works!
+#### Example Response
 
----
-
-## 📖 Full Details
-
-All files have extensive teaching comments explaining:
-- What each annotation does
-- Why we use it
-- How it works
-- Interview questions
-
-Read these in order:
-1. `application.yml` - Database config
-2. `User.java` - Entity annotations
-3. `UserRepository.java` - Spring Data magic
-4. `UserController.java` - CRUD endpoints
+```json
+[
+  {
+    "id": 1,
+    "email": "test@example.com",
+    "fullName": "Test User"
+  }
+]
+```
 
 ---
 
-## 💡 H2 vs PostgreSQL
+## 🧩 Backend Concepts
 
-| Feature | H2 | PostgreSQL |
-|---------|-----|-----------|
-| For Learning | ✅ Perfect | ✅ Perfect |
-| Installation | ✅ None | ❌ Required |
-| Web Console | ✅ Built-in | ❌ Separate tool |
-| Data Persistence | ❌ In-memory | ✅ On disk |
-| Production | ❌ No | ✅ Yes |
+This project demonstrates practical implementation of:
 
-**Conclusion:** Learn with H2, deploy with PostgreSQL!
-
----
-
-## 🎓 Interview Questions You'll Answer
-
-After this step:
-- ✅ What is JPA and Hibernate?
-- ✅ How does Spring Data JPA work?
-- ✅ What is Dependency Injection?
-- ✅ Explain @Entity and @Id
-- ✅ Why use Spring Data repositories?
-- ✅ What's the difference between H2 and PostgreSQL?
+* REST API development
+* Spring Boot architecture
+* Entity mapping with JPA
+* Hibernate ORM
+* Repository pattern
+* CRUD operations
+* Dependency Injection
+* Database integration
+* Maven dependency management
 
 ---
 
-## ➡️ Next: Step 3
+## 🔄 Future Enhancements
 
-User Registration with:
-- Password hashing
-- Input validation
-- DTOs
-- Service layer
+Planned improvements include:
+
+* [ ] User authentication
+* [ ] Password hashing
+* [ ] Input validation
+* [ ] DTO and service layers
+* [ ] PostgreSQL integration
+* [ ] AI-powered document generation
+* [ ] Document templates
+* [ ] PDF export
+* [ ] User dashboard
+* [ ] Cloud deployment
 
 ---
 
-**Progress: ████░░░░░░░░░░░░░░░░ 22% (2/9)**
+## 📈 Development Progress
 
-**Ready? Run it and explore! 🚀**
+```text
+Step 1  ████████████████████  Backend Setup
+Step 2  ████████████████████  H2 Database + CRUD
+Step 3  ███████████░░░░░░░░░  Authentication
+Step 4  ░░░░░░░░░░░░░░░░░░░░  AI Integration
+Step 5  ░░░░░░░░░░░░░░░░░░░░  Document Generation
+Step 6  ░░░░░░░░░░░░░░░░░░░░  Deployment
+```
+
+---
+
+## 👨‍💻 Developer
+
+**Yashowardhan Shete**
+
+B.Tech CSE – Artificial Intelligence & Analytics
+
+GitHub: [@yashowardhan0124](https://github.com/yashowardhan0124)
+
+---
+
+## 📄 License
+
+This project is developed for educational and portfolio purposes.
+
+---
+
+⭐ If you find this project interesting, consider giving the repository a star!
