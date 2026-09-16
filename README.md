@@ -35,6 +35,8 @@ Advodraft aims to make legal document preparation faster, structured, and easier
 
 A real document generated end-to-end by Advodraft — a **Rental Agreement** between two parties, created by filling in Party A, Party B, and a short instruction on the Draft Document screen, then clicking **Generate Draft**.
 
+https://1drv.ms/b/c/ce345e18b57cc5c7/IQAsLT08pGs9RLSHB6P_D77sAaehtPYrK1nFON1FMHbInDc?e=FuNHZC
+
 
 ## 🏗️ Project Architecture
 
