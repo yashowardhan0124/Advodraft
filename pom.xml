@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.0</version>
+    </parent>
+
+    <groupId>com.advodraft</groupId>
+    <artifactId>advodraft-backend</artifactId>
+    <version>1.0.0</version>
+    <name>Advodraft Backend</name>
+
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- 
+        ═══════════════════════════════════════════════════════════════
+        FROM STEP 1 - Web dependency (REST APIs)
+        ═══════════════════════════════════════════════════════════════
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- 
+        ═══════════════════════════════════════════════════════════════
+        NEW IN STEP 2 - Database dependencies
+        ═══════════════════════════════════════════════════════════════
+        -->
+
+        <!-- 
+        Spring Data JPA
+        ────────────────────────────────────────────────────────────
+        WHAT: Object-Relational Mapping (ORM)
+        WHY: Write Java code, get SQL automatically!
+        INCLUDES: 
+        - Hibernate (JPA implementation)
+        - Spring Data JPA (auto-generates repositories)
+        
+        INTERVIEW:
+        "JPA lets us work with database using Java objects instead of SQL.
+         Hibernate is the implementation, Spring Data JPA adds repositories."
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- 
+        H2 Database (In-Memory)
+        ────────────────────────────────────────────────────────────
+        WHAT: In-memory database (perfect for learning!)
+        WHY: No installation needed, works out of the box
+        SCOPE: runtime - only needed when running
+        
+        BENEFITS:
+        - Zero installation (runs inside your app)
+        - Built-in web console (view data in browser!)
+        - Perfect for learning and development
+        - Same JPA/Hibernate concepts as PostgreSQL
+        - Can switch to PostgreSQL later with one config change
+        
+        INTERVIEW:
+        "H2 is an embedded Java database, often used for development
+         and testing. It supports in-memory and file-based modes, and
+         provides a web console for database management."
+        -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- 
+        Lombok (makes code cleaner!)
+        ────────────────────────────────────────────────────────────
+        WHAT: Reduces boilerplate code
+        WHY: No need to write getters, setters, constructors manually
+        
+        With Lombok:
+        @Data
+        public class User { ... }  ← Auto-generates everything!
+        
+        Without Lombok:
+        public class User {
+            private String name;
+            public String getName() { return name; }
+            public void setName(String name) { this.name = name; }
+            // ... 50+ more lines
+        }
+        
+        INTERVIEW:
+        "Lombok generates boilerplate code at compile time using annotations.
+         It reduces code size significantly without runtime overhead."
+        -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <build>
+    <plugins>
+       <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.11.0</version>
+    <configuration>
+        <annotationProcessorPaths>
+            <path>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.30</version>  <!-- ✅ must be explicit here -->
+            </path>
+        </annotationProcessorPaths>
+    </configuration>
+</plugin>
+</plugins>
+    
+    </build>
+</project>

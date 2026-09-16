@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Advodraft — AI Legal Document Drafting</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0b0c0f;--surface:#11131a;--card:#171921;--raised:#1e2129;
+  --border:#252830;--gold:#c8a456;--gold-soft:#a88840;--cream:#e9e3d6;
+  --muted:#6b7280;--dim:#3a3d48;--success:#3d8a5e;--danger:#9b3535;
+  --sidebar:240px;
+}
+html,body{height:100%;background:var(--ink);color:var(--cream);font-family:'DM Sans',sans-serif;font-weight:300}
+.page{display:none;min-height:100vh}
+.page.active{display:flex}
+
+/* AUTH */
+#auth-page{align-items:center;justify-content:center;background:var(--ink);position:relative;overflow:hidden}
+#auth-page::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 70% 50%,#1a160d 0%,transparent 70%),radial-gradient(ellipse 40% 60% at 20% 80%,#0d1018 0%,transparent 60%)}
+.auth-left{flex:1;display:flex;align-items:center;justify-content:center;padding:60px;position:relative;z-index:1}
+.auth-brand{max-width:400px}
+.auth-logo{font-family:'Cormorant Garamond',serif;font-size:3.2rem;font-weight:300;letter-spacing:.1em;color:var(--cream);line-height:1;margin-bottom:16px}
+.auth-logo em{color:var(--gold);font-style:italic}
+.auth-tagline{font-size:1.05rem;color:var(--muted);font-weight:300;line-height:1.7;margin-bottom:48px}
+.feature-list{display:flex;flex-direction:column;gap:16px}
+.feature{display:flex;align-items:flex-start;gap:14px}
+.feature-icon{width:32px;height:32px;border-radius:8px;background:rgba(200,164,86,.08);border:1px solid rgba(200,164,86,.2);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-top:2px}
+.feature-text{font-size:14px;color:var(--muted);line-height:1.6}
+.feature-text strong{color:var(--cream);font-weight:400;display:block;margin-bottom:2px}
+.auth-right{width:480px;flex-shrink:0;background:var(--card);border-left:1px solid var(--border);display:flex;align-items:center;justify-content:center;padding:60px 48px;position:relative;z-index:1;min-height:100vh}
+.auth-box{width:100%}
+.auth-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;margin-bottom:6px}
+.auth-sub{font-size:13px;color:var(--muted);margin-bottom:36px}
+.tab-row{display:flex;gap:0;margin-bottom:32px;border-bottom:1px solid var(--border)}
+.tab{padding:10px 20px;font-size:13px;letter-spacing:.06em;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .2s,border-color .2s;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:18px}
+label.lbl{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+input.inp{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:13px 16px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;outline:none;transition:border-color .2s;width:100%}
+input.inp:focus{border-color:var(--gold-soft)}
+input.inp::placeholder{color:var(--dim)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 24px;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:400;cursor:pointer;transition:opacity .2s,transform .1s;width:100%;letter-spacing:.03em}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--gold);color:var(--ink)}
+.btn-primary:hover{opacity:.88}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted);width:auto}
+.btn-outline:hover{border-color:var(--gold-soft);color:var(--cream)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-sm{padding:9px 18px;font-size:13px;width:auto}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted);width:auto}
+.btn-ghost:hover{border-color:var(--dim);color:var(--cream)}
+.err-msg{font-size:12px;color:var(--danger);margin-top:-10px;margin-bottom:12px;display:none}
+.err-msg.show{display:block}
+.ok-msg{font-size:12px;color:var(--success);margin-top:-10px;margin-bottom:12px;display:none}
+.ok-msg.show{display:block}
+
+/* APP */
+#app-page{flex-direction:row}
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:0;min-height:100vh;position:sticky;top:0;height:100vh}
+.sidebar-logo{padding:28px 24px 20px;font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:300;letter-spacing:.08em;border-bottom:1px solid var(--border)}
+.sidebar-logo em{color:var(--gold);font-style:italic}
+.sidebar-nav{flex:1;padding:16px 0}
+.nav-section{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);padding:16px 24px 8px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 24px;cursor:pointer;font-size:13px;color:var(--muted);transition:background .15s,color .15s;border-left:2px solid transparent}
+.nav-item:hover{background:var(--raised);color:var(--cream)}
+.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:rgba(200,164,86,.05)}
+.nav-icon{font-size:16px;width:20px;text-align:center}
+.sidebar-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.avatar{width:34px;height:34px;border-radius:50%;background:rgba(200,164,86,.15);border:1px solid rgba(200,164,86,.3);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--gold);flex-shrink:0}
+.user-info{flex:1;overflow:hidden}
+.user-name-s{font-size:13px;font-weight:400;color:var(--cream);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-email-s{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logout-btn{background:none;border:none;color:var(--dim);cursor:pointer;font-size:16px;padding:4px;transition:color .2s}
+.logout-btn:hover{color:var(--danger)}
+.main{flex:1;overflow-y:auto;background:var(--surface)}
+.panel{display:none;padding:40px 48px;animation:fadeIn .25s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--muted);margin-bottom:36px}
+.cards-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px 24px 20px}
+.stat-card-val{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--gold);line-height:1;margin-bottom:6px}
+.stat-card-lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.section-label{font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:400}
+.doc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.doc-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;cursor:pointer;transition:border-color .2s,transform .15s}
+.doc-card:hover{border-color:var(--gold-soft);transform:translateY(-2px)}
+.doc-type{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.doc-title{font-size:14px;font-weight:400;color:var(--cream);margin-bottom:6px;line-height:1.4}
+.doc-meta{font-size:12px;color:var(--muted)}
+.doc-icon{font-size:28px;margin-bottom:14px}
+
+/* DRAFT */
+#panel-draft{padding:0}
+.draft-layout{display:grid;grid-template-columns:290px 1fr;min-height:calc(100vh - 0px)}
+.draft-sidebar{background:var(--card);border-right:1px solid var(--border);padding:28px 20px;overflow-y:auto}
+.draft-main{padding:36px 40px;overflow-y:auto;background:var(--surface)}
+.draft-section-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;margin-bottom:14px;color:var(--cream)}
+.template-list{display:flex;flex-direction:column;gap:6px;margin-bottom:24px}
+.template-item{padding:11px 13px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:13px;color:var(--muted);transition:border-color .2s,color .2s,background .2s}
+.template-item:hover{border-color:var(--gold-soft);color:var(--cream);background:rgba(200,164,86,.04)}
+.template-item.selected{border-color:var(--gold);color:var(--gold);background:rgba(200,164,86,.06)}
+.template-name{font-weight:400;margin-bottom:1px;font-size:12px}
+.template-desc{font-size:11px;color:var(--dim)}
+.template-item.selected .template-desc{color:var(--gold-soft)}
+textarea.inp{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--cream);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;outline:none;transition:border-color .2s;width:100%;resize:vertical;min-height:80px;line-height:1.6}
+textarea.inp:focus{border-color:var(--gold-soft)}
+textarea.inp::placeholder{color:var(--dim)}
+.generate-btn{background:var(--gold);color:var(--ink);border:none;border-radius:9px;padding:13px 24px;font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer;width:100%;font-weight:500;letter-spacing:.03em;transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.generate-btn:hover{opacity:.88}
+.generate-btn:disabled{opacity:.4;cursor:not-allowed}
+.output-area{background:var(--card);border:1px solid var(--border);border-radius:12px;min-height:500px;padding:32px 36px;position:relative}
+.output-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--dim);text-align:center;gap:12px;border-radius:12px}
+.output-placeholder-icon{font-size:2.5rem;opacity:.3}
+.output-placeholder-text{font-size:14px;font-family:'DM Sans',sans-serif}
+.output-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.output-doc-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:400;letter-spacing:.04em}
+.output-actions{display:flex;gap:10px}
+.doc-content{white-space:pre-wrap;font-family:'Cormorant Garamond',serif;font-size:.97rem;line-height:1.9;color:var(--cream)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.cursor{display:inline-block;width:2px;height:1em;background:var(--gold);vertical-align:text-bottom;animation:blink 1s step-end infinite;margin-left:2px}
+#toast{position:fixed;bottom:28px;right:28px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 20px;font-size:13px;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;z-index:9999;pointer-events:none}
+#toast.show{opacity:1;transform:translateY(0)}
+#toast.ok{border-left:3px solid var(--success)}
+#toast.err{border-left:3px solid var(--danger)}
+.spinner{width:18px;height:18px;border:2px solid rgba(0,0,0,.2);border-top-color:var(--ink);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:900px){.auth-left{display:none}.auth-right{width:100%}.cards-row{grid-template-columns:1fr 1fr}.panel{padding:24px}.draft-layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div class="page active" id="auth-page">
+  <div class="auth-left">
+    <div class="auth-brand">
+      <div class="auth-logo">Advo<em>draft</em></div>
+      <div class="auth-tagline">AI-powered legal document drafting for modern advocates. Draft contracts, agreements & notices in seconds.</div>
+      <div class="feature-list">
+        <div class="feature"><div class="feature-icon">⚖️</div><div class="feature-text"><strong>Smart Templates</strong>NDAs, contracts, notices & more — pre-built for legal practice.</div></div>
+        <div class="feature"><div class="feature-icon">✍️</div><div class="feature-text"><strong>AI Drafting</strong>Describe your need, get a full professional draft in seconds.</div></div>
+        <div class="feature"><div class="feature-icon">📄</div><div class="feature-text"><strong>PDF Export</strong>Court-ready documents at one click.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-box">
+      <div class="auth-title">Welcome back</div>
+      <div class="auth-sub">Sign in to your workspace</div>
+      <div class="tab-row">
+        <button class="tab active" onclick="switchTab('login')">Sign In</button>
+        <button class="tab" onclick="switchTab('register')">Create Account</button>
+      </div>
+      <div id="login-form">
+        <div class="field"><label class="lbl">Email Address</label><input class="inp" type="email" id="login-email" placeholder="you@example.com"/></div>
+        <div class="field"><label class="lbl">Password</label><input class="inp" type="password" id="login-pass" placeholder="••••••••"/></div>
+        <div class="err-msg" id="login-err">Invalid credentials. Please try again.</div>
+        <button class="btn btn-primary" id="login-btn" onclick="doLogin()">Sign In</button>
+      </div>
+      <div id="register-form" style="display:none">
+        <div class="field"><label class="lbl">Full Name</label><input class="inp" type="text" id="reg-name" placeholder="Adv. Priya Sharma"/></div>
+        <div class="field"><label class="lbl">Email Address</label><input class="inp" type="email" id="reg-email" placeholder="you@example.com"/></div>
+        <div class="field"><label class="lbl">Password</label><input class="inp" type="password" id="reg-pass" placeholder="Min. 6 characters"/></div>
+        <div class="err-msg" id="reg-err">This email is already registered.</div>
+        <div class="ok-msg" id="reg-ok">Account created! Signing you in…</div>
+        <button class="btn btn-primary" id="reg-btn" onclick="doRegister()">Create Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="page" id="app-page">
+  <aside class="sidebar">
+    <div class="sidebar-logo">Advo<em>draft</em></div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Workspace</div>
+      <div class="nav-item active" onclick="showPanel('dashboard')"><span class="nav-icon">⊞</span> Dashboard</div>
+      <div class="nav-item" onclick="showPanel('draft')"><span class="nav-icon">✍</span> Draft Document</div>
+      <div class="nav-section">Library</div>
+      <div class="nav-item" onclick="showPanel('templates')"><span class="nav-icon">◫</span> Templates</div>
+      <div class="nav-item" onclick="showPanel('saved')"><span class="nav-icon">◱</span> Saved Drafts</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="avatar" id="sidebar-avatar">A</div>
+      <div class="user-info">
+        <div class="user-name-s" id="sidebar-name">—</div>
+        <div class="user-email-s" id="sidebar-email">—</div>
+      </div>
+      <button class="logout-btn" title="Sign out" onclick="logout()">⏻</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="page-title" id="greeting">Good morning</div>
+      <div class="page-sub">Here's your workspace overview</div>
+      <div class="cards-row">
+        <div class="stat-card"><div class="stat-card-val" id="stat-drafts">0</div><div class="stat-card-lbl">Drafts Created</div></div>
+        <div class="stat-card"><div class="stat-card-val">12</div><div class="stat-card-lbl">Templates Available</div></div>
+        <div class="stat-card"><div class="stat-card-val">∞</div><div class="stat-card-lbl">AI Generations</div></div>
+      </div>
+      <div class="section-head"><div class="section-label">Quick Start</div></div>
+      <div class="doc-grid">
+        <div class="doc-card" onclick="startTemplate('NDA')"><div class="doc-icon">🤝</div><div class="doc-type">Agreement</div><div class="doc-title">Non-Disclosure Agreement</div><div class="doc-meta">Confidentiality & trade secrets</div></div>
+        <div class="doc-card" onclick="startTemplate('Employment Contract')"><div class="doc-icon">💼</div><div class="doc-type">Contract</div><div class="doc-title">Employment Contract</div><div class="doc-meta">Full-time & consultancy roles</div></div>
+        <div class="doc-card" onclick="startTemplate('Legal Notice')"><div class="doc-icon">📋</div><div class="doc-type">Notice</div><div class="doc-title">Legal Notice</div><div class="doc-meta">Demand, eviction, recovery</div></div>
+        <div class="doc-card" onclick="startTemplate('Rental Agreement')"><div class="doc-icon">🏠</div><div class="doc-type">Agreement</div><div class="doc-title">Rental Agreement</div><div class="doc-meta">Residential & commercial leases</div></div>
+        <div class="doc-card" onclick="startTemplate('Power of Attorney')"><div class="doc-icon">⚖️</div><div class="doc-type">Authority</div><div class="doc-title">Power of Attorney</div><div class="doc-meta">General & specific PoA</div></div>
+        <div class="doc-card" onclick="showPanel('draft')" style="border-style:dashed;opacity:.6"><div class="doc-icon">＋</div><div class="doc-type">Custom</div><div class="doc-title">Blank Document</div><div class="doc-meta">Describe any document you need</div></div>
+      </div>
+    </div>
+
+    <!-- DRAFT -->
+    <div class="panel" id="panel-draft">
+      <div class="draft-layout">
+        <div class="draft-sidebar">
+          <div class="draft-section-title">Document Type</div>
+          <div class="template-list" id="template-list"></div>
+          <div class="draft-section-title">Details</div>
+          <div class="field"><label class="lbl">Party A (Client / Employer)</label><input class="inp" type="text" id="party-a" placeholder="e.g. Raj Enterprises Pvt. Ltd."/></div>
+          <div class="field"><label class="lbl">Party B (Other Party)</label><input class="inp" type="text" id="party-b" placeholder="e.g. Suresh Kumar"/></div>
+          <div class="field" style="margin-bottom:20px"><label class="lbl">Additional Instructions</label><textarea class="inp" id="extra-notes" placeholder="e.g. Governing law: Maharashtra. 3-month notice period."></textarea></div>
+          <button class="generate-btn" id="gen-btn" onclick="generateDoc()">✦ Generate Draft</button>
+        </div>
+        <div class="draft-main">
+          <div class="output-area" id="output-area">
+            <div class="output-placeholder" id="output-placeholder">
+              <div class="output-placeholder-icon">✦</div>
+              <div class="output-placeholder-text">Select a template and fill in details<br>to generate your document</div>
+            </div>
+            <div id="output-content" style="display:none">
+              <div class="output-header">
+                <div class="output-doc-title" id="output-doc-title">Document</div>
+                <div class="output-actions">
+                  <button class="btn btn-ghost btn-sm" onclick="copyDoc()">⎘ Copy</button>
+                  <button class="btn btn-outline btn-sm" onclick="printDoc()">⬇ Export PDF</button>
+                </div>
+              </div>
+              <div class="doc-content" id="doc-body"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEMPLATES -->
+    <div class="panel" id="panel-templates">
+      <div class="page-title">Templates</div>
+      <div class="page-sub">Choose a template to start drafting</div>
+      <div class="doc-grid" id="templates-grid"></div>
+    </div>
+
+    <!-- SAVED -->
+    <div class="panel" id="panel-saved">
+      <div class="page-title">Saved Drafts</div>
+      <div class="page-sub">Your previously generated documents</div>
+      <div id="saved-list"></div>
+    </div>
+  </main>
+</div>
+
+<div id="toast"></div>
+<script>
+const API='http://localhost:8080/api/users';
+let currentUser=null,selectedTemplate=null;
+let drafts=JSON.parse(localStorage.getItem('advo_drafts')||'[]');
+
+const TEMPLATES=[
+  {id:'NDA',name:'Non-Disclosure Agreement',desc:'Confidentiality between parties',icon:'🤝',type:'Agreement'},
+  {id:'Employment Contract',name:'Employment Contract',desc:'Full-time or consultancy',icon:'💼',type:'Contract'},
+  {id:'Legal Notice',name:'Legal Notice',desc:'Demand, eviction, recovery',icon:'📋',type:'Notice'},
+  {id:'Rental Agreement',name:'Rental Agreement',desc:'Residential & commercial',icon:'🏠',type:'Agreement'},
+  {id:'Power of Attorney',name:'Power of Attorney',desc:'General & specific PoA',icon:'⚖️',type:'Authority'},
+  {id:'Service Agreement',name:'Service Agreement',desc:'Freelance & vendor contracts',icon:'🔧',type:'Contract'},
+  {id:'Affidavit',name:'Affidavit',desc:'Sworn statement of facts',icon:'📜',type:'Affidavit'},
+  {id:'Partnership Deed',name:'Partnership Deed',desc:'Business partnership terms',icon:'🤝',type:'Deed'},
+  {id:'Loan Agreement',name:'Loan Agreement',desc:'Personal & business loans',icon:'💰',type:'Agreement'},
+  {id:'Sale Deed',name:'Sale Deed',desc:'Transfer of property',icon:'🏛️',type:'Deed'},
+  {id:'MOU',name:'Memorandum of Understanding',desc:'Pre-contract understanding',icon:'📃',type:'Agreement'},
+  {id:'Cease and Desist',name:'Cease & Desist',desc:'IP protection & harassment',icon:'🚫',type:'Notice'},
+];
+
+function switchTab(tab){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',(i===0)===(tab==='login')));
+  document.getElementById('login-form').style.display=tab==='login'?'':'none';
+  document.getElementById('register-form').style.display=tab==='register'?'':'none';
+}
+
+async function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  const err=document.getElementById('login-err');
+  const btn=document.getElementById('login-btn');
+  err.classList.remove('show');
+  if(!email||!pass){err.textContent='Please fill in all fields.';err.classList.add('show');return}
+  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Signing in…';
+  try{
+    const res=await fetch(API);const users=await res.json();
+    const found=users.find(u=>u.email===email);
+    if(!found){err.textContent='No account found with this email. Create one?';err.classList.add('show');return}
+    loginSuccess(found);
+  }catch{err.textContent='Cannot reach server. Is your Spring Boot app running?';err.classList.add('show')}
+  finally{btn.disabled=false;btn.textContent='Sign In'}
+}
+
+async function doRegister(){
+  const name=document.getElementById('reg-name').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  const pass=document.getElementById('reg-pass').value;
+  const err=document.getElementById('reg-err');const ok=document.getElementById('reg-ok');
+  const btn=document.getElementById('reg-btn');
+  err.classList.remove('show');ok.classList.remove('show');
+  if(!name||!email||!pass){err.textContent='Please fill in all fields.';err.classList.add('show');return}
+  if(pass.length<6){err.textContent='Password must be at least 6 characters.';err.classList.add('show');return}
+  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Creating account…';
+  try{
+    const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fullName:name,email})});
+    if(res.status===409){err.textContent='This email is already registered.';err.classList.add('show');return}
+    if(!res.ok)throw new Error();
+    const user=await res.json();ok.classList.add('show');
+    setTimeout(()=>loginSuccess(user),900);
+  }catch(e){if(!ok.classList.contains('show')){err.textContent='Cannot reach server. Is your Spring Boot app running?';err.classList.add('show')}}
+  finally{btn.disabled=false;btn.textContent='Create Account'}
+}
+
+function loginSuccess(user){
+  currentUser=user;localStorage.setItem('advo_user',JSON.stringify(user));
+  const initials=user.fullName?.split(' ').map(w=>w[0]).slice(0,2).join('')||'?';
+  document.getElementById('sidebar-avatar').textContent=initials;
+  document.getElementById('sidebar-name').textContent=user.fullName;
+  document.getElementById('sidebar-email').textContent=user.email;
+  const h=new Date().getHours();
+  const g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  document.getElementById('greeting').textContent=`${g}, ${user.fullName?.split(' ')[0]||''}`;
+  document.getElementById('stat-drafts').textContent=drafts.length;
+  buildTemplateList();buildTemplatesGrid();renderSaved();
+  document.getElementById('auth-page').classList.remove('active');
+  document.getElementById('app-page').classList.add('active');
+  showPanel('dashboard');
+}
+
+function logout(){
+  currentUser=null;localStorage.removeItem('advo_user');
+  document.getElementById('auth-page').classList.add('active');
+  document.getElementById('app-page').classList.remove('active');
+}
+
+function showPanel(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  const map={dashboard:0,draft:1,templates:2,saved:3};
+  const items=document.querySelectorAll('.nav-item');
+  if(map[id]!==undefined)items[map[id]].classList.add('active');
+}
+
+function buildTemplateList(){
+  document.getElementById('template-list').innerHTML=TEMPLATES.map(t=>`
+    <div class="template-item ${selectedTemplate?.id===t.id?'selected':''}" onclick="selectTemplate('${t.id}')">
+      <div class="template-name">${t.icon} ${t.name}</div>
+      <div class="template-desc">${t.desc}</div>
+    </div>`).join('');
+}
+
+function buildTemplatesGrid(){
+  document.getElementById('templates-grid').innerHTML=TEMPLATES.map(t=>`
+    <div class="doc-card" onclick="startTemplate('${t.id}')">
+      <div class="doc-icon">${t.icon}</div><div class="doc-type">${t.type}</div>
+      <div class="doc-title">${t.name}</div><div class="doc-meta">${t.desc}</div>
+    </div>`).join('');
+}
+
+function selectTemplate(id){selectedTemplate=TEMPLATES.find(t=>t.id===id);buildTemplateList()}
+function startTemplate(id){selectTemplate(id);showPanel('draft')}
+
+async function generateDoc(){
+  if(!selectedTemplate){toast('Please select a document type first','err');return}
+  const a=document.getElementById('party-a').value.trim();
+  const b=document.getElementById('party-b').value.trim();
+  const notes=document.getElementById('extra-notes').value.trim();
+  if(!a||!b){toast('Please fill in Party A and Party B','err');return}
+
+  const btn=document.getElementById('gen-btn');
+  btn.disabled=true;btn.innerHTML='<div class="spinner" style="border-top-color:var(--ink)"></div> Generating…';
+  document.getElementById('output-placeholder').style.display='none';
+  document.getElementById('output-content').style.display='block';
+  document.getElementById('output-doc-title').textContent=selectedTemplate.name;
+  const body=document.getElementById('doc-body');
+  body.innerHTML='';
+
+  const text =
+`${selectedTemplate.name.toUpperCase()}
+
+This ${selectedTemplate.name} ("Agreement") is entered into as of [DATE] by and between:
+
+PARTY A: ${a}
+PARTY B: ${b}
+
+RECITALS
+
+WHEREAS, the parties desire to enter into this Agreement to set forth the terms and conditions governing their relationship;
+
+NOW, THEREFORE, in consideration of the mutual covenants contained herein, the parties agree as follows:
+
+1. DEFINITIONS
+
+   "Confidential Information" means any information disclosed by either party that is marked as confidential or that reasonably should be understood to be confidential given the nature of the information and the circumstances of disclosure.
+
+2. OBLIGATIONS OF THE PARTIES
+
+   2.1 Each party agrees to hold the other party's Confidential Information in strict confidence.
+   2.2 Neither party shall disclose Confidential Information to any third party without prior written consent.
+   2.3 Each party shall use the Confidential Information solely for the purpose of evaluating the potential business relationship between the parties.
+
+3. EXCLUSIONS
+
+   The obligations set forth herein shall not apply to information that:
+   (a) Is or becomes publicly known through no breach of this Agreement;
+   (b) Was rightfully known before disclosure by the disclosing party;
+   (c) Is required to be disclosed by law or court order.
+
+4. TERM
+
+   This Agreement shall commence on [DATE] and remain in effect for a period of two (2) years, unless earlier terminated by either party upon thirty (30) days written notice.
+
+5. REMEDIES
+
+   The parties acknowledge that breach of this Agreement may cause irreparable harm for which monetary damages would be an inadequate remedy. Accordingly, the non-breaching party shall be entitled to seek equitable relief in addition to all other remedies.
+
+6. GOVERNING LAW
+${notes ? '\n   '+notes+'\n' : ''}
+   This Agreement shall be governed by and construed in accordance with the laws of India. Any disputes arising hereunder shall be subject to the exclusive jurisdiction of courts in India.
+
+7. ENTIRE AGREEMENT
+
+   This Agreement constitutes the entire agreement between the parties with respect to its subject matter and supersedes all prior negotiations, representations, and agreements.
+
+IN WITNESS WHEREOF, the parties have executed this ${selectedTemplate.name} as of the date first written above.
+
+
+${a.toUpperCase()}                         ${b.toUpperCase()}
+
+Signature: _____________________           Signature: _____________________
+
+Name:      _____________________           Name:      _____________________
+
+Title:     _____________________           Title:     _____________________
+
+Date:      _____________________           Date:      _____________________`;
+
+  // Typewriter animation
+  let i=0;
+  const cursor=document.createElement('span');cursor.className='cursor';body.appendChild(cursor);
+  const tick=()=>{
+    if(i<text.length){
+      cursor.insertAdjacentText('beforebegin',text.slice(i,i+6));
+      i+=6;
+      requestAnimationFrame(tick);
+    } else {
+      cursor.remove();
+      saveDraft(selectedTemplate.name,a,b,text);
+      toast('Document generated successfully');
+    }
+  };
+  setTimeout(()=>requestAnimationFrame(tick), 600);
+  btn.disabled=false;btn.innerHTML='✦ Generate Draft';
+}
+
+function saveDraft(type,a,b,content){
+  const d={id:Date.now(),type,partyA:a,partyB:b,content,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})};
+  drafts.unshift(d);localStorage.setItem('advo_drafts',JSON.stringify(drafts));
+  document.getElementById('stat-drafts').textContent=drafts.length;renderSaved();
+}
+
+function renderSaved(){
+  const el=document.getElementById('saved-list');
+  if(!drafts.length){el.innerHTML=`<div style="text-align:center;padding:64px;color:var(--muted);font-size:14px">No saved drafts yet. Generate your first document!</div>`;return}
+  el.innerHTML=`<div class="doc-grid">${drafts.map(d=>`<div class="doc-card" onclick="viewDraft(${d.id})"><div class="doc-type">${d.type}</div><div class="doc-title" style="margin-bottom:8px">${d.partyA} ↔ ${d.partyB}</div><div class="doc-meta">${d.date}</div></div>`).join('')}</div>`;
+}
+
+function viewDraft(id){
+  const d=drafts.find(x=>x.id===id);if(!d)return;
+  const tmpl=TEMPLATES.find(t=>t.name===d.type||t.id===d.type);
+  if(tmpl)selectTemplate(tmpl.id);
+  document.getElementById('party-a').value=d.partyA;
+  document.getElementById('party-b').value=d.partyB;
+  document.getElementById('output-placeholder').style.display='none';
+  document.getElementById('output-content').style.display='block';
+  document.getElementById('output-doc-title').textContent=d.type;
+  document.getElementById('doc-body').textContent=d.content;
+  showPanel('draft');
+}
+
+function copyDoc(){navigator.clipboard.writeText(document.getElementById('doc-body').textContent).then(()=>toast('Copied to clipboard'))}
+
+function printDoc(){
+  const content=document.getElementById('doc-body').textContent;
+  const title=document.getElementById('output-doc-title').textContent;
+  const w=window.open('','_blank');
+  w.document.write(`<html><head><title>${title}</title><style>body{font-family:Georgia,serif;max-width:750px;margin:60px auto;font-size:14px;line-height:1.9;color:#111}pre{white-space:pre-wrap;font-family:inherit}</style></head><body><pre>${content}</pre></body></html>`);
+  w.document.close();w.print();
+}
+
+function toast(msg,type='ok'){const t=document.getElementById('toast');t.textContent=msg;t.className='show '+(type||'ok');setTimeout(()=>t.className='',2800)}
+
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter')return;
+  if(document.getElementById('login-form').style.display!=='none'&&(e.target.id==='login-email'||e.target.id==='login-pass'))doLogin();
+  if(document.getElementById('register-form').style.display!=='none'&&['reg-name','reg-email','reg-pass'].includes(e.target.id))doRegister();
+});
+
+(function init(){
+  const saved=localStorage.getItem('advo_user');
+  if(saved){try{loginSuccess(JSON.parse(saved))}catch{localStorage.removeItem('advo_user')}}
+  buildTemplateList();
+})();
+</script>
+</body>
+</html>

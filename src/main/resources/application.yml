@@ -1,0 +1,116 @@
+# ═══════════════════════════════════════════════════════════════════
+# STEP 2 CONFIGURATION - Adding Database!
+# ═══════════════════════════════════════════════════════════════════
+
+spring:
+  application:
+    name: advodraft-backend
+
+  # ─────────────────────────────────────────────────────────────────
+  # DATABASE CONFIGURATION - H2 (In-Memory Database)
+  # ─────────────────────────────────────────────────────────────────
+  # WHAT IS H2?
+  # - In-memory database (runs inside your app)
+  # - Perfect for learning and development
+  # - No installation needed!
+  # - Same JPA/Hibernate concepts as PostgreSQL
+  # 
+  # WHY H2 FOR LEARNING?
+  # - Zero setup (no PostgreSQL installation)
+  # - Built-in web console (see your data in browser!)
+  # - Fast and simple
+  # - Can switch to PostgreSQL later (just change config!)
+  # 
+  # DIFFERENCE FROM POSTGRESQL:
+  # - Data stored in memory (lost when app stops)
+  # - PostgreSQL stores on disk (data persists)
+  # - For learning: H2 is perfect!
+  # - For production: Use PostgreSQL
+  # ─────────────────────────────────────────────────────────────────
+  datasource:
+    # H2 in-memory database URL
+    # mem:advodraft_dev = database name in memory
+    url: jdbc:h2:mem:advodraft_dev
+    
+    # H2 default credentials
+    username: sa
+    password: 
+    
+    # H2 driver class (auto-detected, but explicit is better)
+    driver-class-name: org.h2.Driver
+  
+  # ─────────────────────────────────────────────────────────────────
+  # H2 WEB CONSOLE - View your database in browser!
+  # ─────────────────────────────────────────────────────────────────
+  # ACCESS: http://localhost:8080/h2-console
+  # 
+  # LOGIN DETAILS:
+  # - JDBC URL: jdbc:h2:mem:advodraft_dev
+  # - Username: sa
+  # - Password: (leave empty)
+  # 
+  # WHAT YOU CAN DO:
+  # - See all tables
+  # - Run SQL queries
+  # - View table structure
+  # - Check your data
+  # ─────────────────────────────────────────────────────────────────
+  h2:
+    console:
+      enabled: true           # Enable web console
+      path: /h2-console       # URL path
+      settings:
+        web-allow-others: false  # Security: only localhost
+
+  # ─────────────────────────────────────────────────────────────────
+  # JPA / HIBERNATE CONFIGURATION
+  # ─────────────────────────────────────────────────────────────────
+  jpa:
+    # Show SQL in console (helpful for learning!)
+    show-sql: true
+    
+    # Format SQL nicely
+    properties:
+      hibernate:
+        format_sql: true
+    
+    # DDL auto mode
+    # ─────────────────────────────────────────────────────────────
+    # WHAT: Controls how database schema is managed
+    # 
+    # OPTIONS:
+    # - none: Do nothing (manual control)
+    # - validate: Check schema matches entities
+    # - update: Add missing columns/tables (SAFE - never deletes)
+    # - create: Drop and recreate (DESTROYS DATA!)
+    # - create-drop: Create on start, drop on stop
+    # 
+    # WHY "update"?
+    # - Creates tables automatically from @Entity classes
+    # - Adds new columns when you modify entities
+    # - NEVER deletes data (safe for development)
+    # 
+    # INTERVIEW:
+    # "ddl-auto=update automatically creates/updates database schema
+    #  from JPA entities. In production, use Flyway/Liquibase instead."
+    # ─────────────────────────────────────────────────────────────
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8080
+
+# Show logs
+logging:
+  level:
+    com.advodraft: INFO
+    org.hibernate.SQL: DEBUG  # See generated SQL queries!
+
+# ═══════════════════════════════════════════════════════════════════
+# WHAT HAPPENS WHEN APP STARTS:
+# ═══════════════════════════════════════════════════════════════════
+# 1. Spring Boot connects to PostgreSQL using these settings
+# 2. Hibernate scans for @Entity classes
+# 3. Creates tables (if ddl-auto=update)
+# 4. App is ready!
+# ═══════════════════════════════════════════════════════════════════
